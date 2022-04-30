@@ -30,22 +30,40 @@ async function run() {
 
     // POST API
     app.post("/laptop", async (req, res) => {
-      const data = req.body
-      const result = await laptopCollection.insertOne(data)
-      res.send(result)
-     });
-    
+      const data = req.body;
+      const result = await laptopCollection.insertOne(data);
+      res.send(result);
+    });
+
     // DELETE API
     app.delete("/laptop/:id", async (req, res) => {
-      const id = req.params.id
-      const deletedItem = {_id: ObjectId(id)}
-      const result = await laptopCollection.deleteOne(deletedItem)
-      res.send(result)
-    })
+      const id = req.params.id;
+      const deletedItem = { _id: ObjectId(id) };
+      const result = await laptopCollection.deleteOne(deletedItem);
+      res.send(result);
+    });
 
-    // PUT API 
-
+    // PUT API
+    app.put("/laptop/:id", async (req, res) => {
+      const id = req.params.id;
+      const data = req.body;
+      const deletedItem = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          name: data.name,
+          image: data.image,
+          description: data.description,
+          price: data.price,
+          quantity: data.quantity,
+          supplierName: data.supplierName,
+        },
+      };
+      const result = await laptopCollection.updateOne(deletedItem, updateDoc, options);
+      res.send(result);
+    });
   } finally {
+
   }
 }
 run().catch(console.dir);
