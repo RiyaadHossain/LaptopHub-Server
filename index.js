@@ -22,13 +22,24 @@ async function run() {
 
     const laptopCollection = client.db("AllLaptop").collection("Laptop");
 
+    // GET API
     app.get("/laptops", async (req, res) => {
       const result = await laptopCollection.find({}).toArray();
-
       res.send(result);
     });
 
-    app.post("/laptop", async (req, res) => {});
+    // POST API
+    app.post("/laptop", async (req, res) => {
+      const data = req.body
+      const result = await laptopCollection.insertOne(data)
+      res.send(result)
+     });
+    
+    // DELETE API
+
+
+    // PUT API 
+
   } finally {
   }
 }
