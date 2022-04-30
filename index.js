@@ -36,7 +36,12 @@ async function run() {
      });
     
     // DELETE API
-
+    app.delete("/laptop/:id", async (req, res) => {
+      const id = req.params.id
+      const deletedItem = {_id: ObjectId(id)}
+      const result = await laptopCollection.deleteOne(deletedItem)
+      res.send(result)
+    })
 
     // PUT API 
 
