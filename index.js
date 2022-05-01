@@ -62,6 +62,23 @@ async function run() {
       const result = await laptopCollection.updateOne(deletedItem, updateDoc, options);
       res.send(result);
     });
+
+    // PUT API for Quantity
+    app.put("/laptop/:id", async (req, res) => {
+      const id = req.params.id;
+      const data = req.body;
+      const deletedItem = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {       
+          quantity: data.quantity,
+        },
+      };
+      const result = await laptopCollection.updateOne(deletedItem, updateDoc, options);
+      res.send(result);
+    });
+
+
   } finally {
 
   }
