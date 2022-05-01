@@ -47,7 +47,7 @@ async function run() {
     app.put("/laptop/:id", async (req, res) => {
       const id = req.params.id;
       const data = req.body;
-      const deletedItem = { _id: ObjectId(id) };
+      const filter = { _id: ObjectId(id) };
       const options = { upsert: true };
       const updateDoc = {
         $set: {
@@ -59,22 +59,22 @@ async function run() {
           supplierName: data.supplierName,
         },
       };
-      const result = await laptopCollection.updateOne(deletedItem, updateDoc, options);
+      const result = await laptopCollection.updateOne(filter, updateDoc, options);
       res.send(result);
     });
 
     // PUT API for Quantity
-    app.put("/laptop/:id", async (req, res) => {
+    app.put("/laptopQuantityUpdate/:id", async (req, res) => {
       const id = req.params.id;
       const data = req.body;
-      const deletedItem = { _id: ObjectId(id) };
+      const filter = { _id: ObjectId(id) };
       const options = { upsert: true };
       const updateDoc = {
         $set: {       
           quantity: data.quantity,
         },
       };
-      const result = await laptopCollection.updateOne(deletedItem, updateDoc, options);
+      const result = await laptopCollection.updateOne(filter, updateDoc, options);
       res.send(result);
     });
 
