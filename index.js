@@ -1,6 +1,7 @@
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const express = require("express");
-var cors = require("cors");
+const cors = require("cors");
+const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 4000;
@@ -31,8 +32,17 @@ async function run() {
     // POST API
     app.post("/laptop", async (req, res) => {
       const data = req.body;
-      const result = await laptopCollection.insertOne(data);
-      res.send(result);
+      const tokenInfo = req.headers.authorization;
+      const [email, accessToken] = tokenInfo.split(" ");
+      const decoded = verifyToken(accessToken);
+      if (email === decoded.email) {
+        const result = await laptopCollection.insertOne(data);
+        res.send({ success: "Product Upload Successfully" });
+      } else {
+        res.send({ success: "UnAuthoraized Access" });
+      }
+      /*  const result = await laptopCollection.insertOne(data);
+      res.send(result); */
     });
 
     // DELETE API
@@ -59,7 +69,11 @@ async function run() {
           supplierName: data.supplierName,
         },
       };
-      const result = await laptopCollection.updateOne(filter, updateDoc, options);
+      const result = await laptopCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
       res.send(result);
     });
 
@@ -70,17 +84,25 @@ async function run() {
       const filter = { _id: ObjectId(id) };
       const options = { upsert: true };
       const updateDoc = {
-        $set: {       
+        $set: {
           quantity: data.quantity,
         },
       };
-      const result = await laptopCollection.updateOne(filter, updateDoc, options);
+      const result = await laptopCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
       res.send(result);
     });
 
-
+    // For JWT Token
+    app.post("/login", async (req, res) => {
+      const email = req.body;
+      const token = jwt.sign(email, process.env.SECRET_TOKEN);
+      res.send({ token });
+    });
   } finally {
-
   }
 }
 run().catch(console.dir);
@@ -92,3 +114,17 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+
+// Function: Verify Token
+function verifyToken(token) {
+  let email;
+  jwt.verify(token, process.env.SECRET_TOKEN, function (err, decoded) {
+    if (err) {
+      email = "Invalid email";
+    }
+    if (decoded) {
+      email = decoded;
+    }
+  });
+  return email;
+}
