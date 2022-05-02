@@ -29,6 +29,19 @@ async function run() {
       res.send(result);
     });
 
+    // For MyItems GET API
+    app.get("/myitems", async (req, res) => {
+      const tokenInfo = req.headers.authorization;
+      const [email, accessToken] = tokenInfo.split(" ");
+      const decoded = verifyToken(accessToken);
+      if (email === decoded.email) {
+        const result = await laptopCollection.find({ email: email }).toArray();
+        res.send(result);
+      } else {
+        res.send({ success: "UnAuthoraized Access" });
+      }
+    });
+
     // POST API
     app.post("/laptop", async (req, res) => {
       const data = req.body;
@@ -41,8 +54,6 @@ async function run() {
       } else {
         res.send({ success: "UnAuthoraized Access" });
       }
-      /*  const result = await laptopCollection.insertOne(data);
-      res.send(result); */
     });
 
     // DELETE API
