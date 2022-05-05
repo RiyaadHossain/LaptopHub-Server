@@ -77,6 +77,7 @@ async function run() {
           description: data.description,
           price: data.price,
           quantity: data.quantity,
+          sold: data.sold,
           supplierName: data.supplierName,
         },
       };
