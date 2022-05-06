@@ -22,7 +22,6 @@ async function run() {
     await client.connect();
 
     const laptopCollection = client.db("AllLaptop").collection("Laptop");
-    const myLaptopCollection = client.db("AllLaptop").collection("MyLaptop");
 
     // GET API
     app.get("/laptops", async (req, res) => {
@@ -36,7 +35,7 @@ async function run() {
       const [email, accessToken] = tokenInfo.split(" ");
       const decoded = verifyToken(accessToken);
       if (email === decoded.email) {
-        const result = await myLaptopCollection.find({ email: email }).toArray();
+        const result = await laptopCollection.find({ email: email }).toArray();
         res.send(result);
       } else {
         res.send({ success: "UnAuthoraized Access" });
@@ -44,7 +43,7 @@ async function run() {
     });
 
     // POST ALL API
-    app.post("/laptop", async (req, res) => {
+    app.post("/alllaptop", async (req, res) => {
       const data = req.body;
 
       const result = await laptopCollection.insertOne(data);
@@ -52,13 +51,13 @@ async function run() {
     });
 
     // POST API
-    app.post("/myLaptop", async (req, res) => {
+    app.post("/laptop", async (req, res) => {
       const data = req.body;
       const tokenInfo = req.headers.authorization;
       const [email, accessToken] = tokenInfo.split(" ");
       const decoded = verifyToken(accessToken);
       if (email === decoded.email) {
-        const result = await myLaptopCollection.insertOne(data);
+        const result = await laptopCollection.insertOne(data);
         res.send({ success: "Product Upload Successfully" });
       } else {
         res.send({ success: "UnAuthoraized Access" });

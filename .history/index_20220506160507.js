@@ -36,7 +36,7 @@ async function run() {
       const [email, accessToken] = tokenInfo.split(" ");
       const decoded = verifyToken(accessToken);
       if (email === decoded.email) {
-        const result = await myLaptopCollection.find({ email: email }).toArray();
+        const result = await laptopCollection.find({ email: email }).toArray();
         res.send(result);
       } else {
         res.send({ success: "UnAuthoraized Access" });
@@ -52,7 +52,7 @@ async function run() {
     });
 
     // POST API
-    app.post("/myLaptop", async (req, res) => {
+    app.post("/laptop", async (req, res) => {
       const data = req.body;
       const tokenInfo = req.headers.authorization;
       const [email, accessToken] = tokenInfo.split(" ");

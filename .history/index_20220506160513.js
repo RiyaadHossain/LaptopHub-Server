@@ -36,7 +36,7 @@ async function run() {
       const [email, accessToken] = tokenInfo.split(" ");
       const decoded = verifyToken(accessToken);
       if (email === decoded.email) {
-        const result = await myLaptopCollection.find({ email: email }).toArray();
+        const result = await laptopCollection.find({ email: email }).toArray();
         res.send(result);
       } else {
         res.send({ success: "UnAuthoraized Access" });
